@@ -1,5 +1,11 @@
-import { useState } from 'react';
-import { Send, ArrowRight, Mail, MessageSquare } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ArrowRight, Mail, MessageSquare, CheckCircle } from 'lucide-react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -10,6 +16,8 @@ export default function Contact() {
     service: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,159 +33,217 @@ export default function Contact() {
 
   return (
     <section id="contact" className="py-24 bg-obsidian relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-ember/5 rounded-full blur-3xl" />
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-ember/5 rounded-full blur-[150px]"
+        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-        <div className="text-center mb-16">
-          <p className="text-ember font-mono text-sm tracking-wider uppercase mb-4">Get Started</p>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative" ref={sectionRef}>
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <Badge variant="ember" className="mb-4">Get Started</Badge>
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">
             Ready to stop guessing?<br />
-            <span className="text-silver">Let's build.</span>
+            <span className="text-gradient">Let's build.</span>
           </h2>
           <p className="text-silver text-lg max-w-2xl mx-auto">
             Stop planning. Start building. Tell us what you're working on
             and we'll show you how we can help.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-          <div className="bg-charcoal border border-titanium/30 rounded-2xl p-8">
-            {isSubmitted ? (
-              <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                <div className="w-16 h-16 bg-ember/10 rounded-full flex items-center justify-center mb-6">
-                  <Send className="w-8 h-8 text-ember" />
-                </div>
-                <h3 className="text-2xl font-bold mb-3">Message Received</h3>
-                <p className="text-silver mb-6">
-                  We'll review your inquiry and get back to you within 24 hours.
-                </p>
-                <p className="text-sm text-silver italic">
-                  "While you're thinking about it, someone else is doing it."
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full bg-gunmetal border border-titanium/50 rounded-lg px-4 py-3 text-white placeholder-silver focus:border-ember focus:outline-none transition-colors"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Email</label>
-                    <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-gunmetal border border-titanium/50 rounded-lg px-4 py-3 text-white placeholder-silver focus:border-ember focus:outline-none transition-colors"
-                      placeholder="you@company.com"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Company</label>
-                  <input
-                    type="text"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full bg-gunmetal border border-titanium/50 rounded-lg px-4 py-3 text-white placeholder-silver focus:border-ember focus:outline-none transition-colors"
-                    placeholder="Your company (optional)"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">What do you need?</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {services.map((service) => (
-                      <button
-                        key={service}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, service })}
-                        className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                          formData.service === service
-                            ? 'bg-ember text-white'
-                            : 'bg-gunmetal border border-titanium/50 text-silver hover:border-ember/50'
-                        }`}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            <Card className="overflow-hidden">
+              <CardContent className="p-8">
+                <AnimatePresence mode="wait">
+                  {isSubmitted ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="h-full flex flex-col items-center justify-center text-center py-12"
+                    >
+                      <motion.div
+                        className="w-16 h-16 bg-ember/10 rounded-full flex items-center justify-center mb-6"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                       >
-                        {service}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                        <CheckCircle className="w-8 h-8 text-ember" />
+                      </motion.div>
+                      <h3 className="text-2xl font-bold mb-3">Message Received</h3>
+                      <p className="text-silver mb-6">
+                        We'll review your inquiry and get back to you within 24 hours.
+                      </p>
+                      <p className="text-sm text-silver italic">
+                        "While you're thinking about it, someone else is doing it."
+                      </p>
+                    </motion.div>
+                  ) : (
+                    <motion.form
+                      key="form"
+                      onSubmit={handleSubmit}
+                      className="space-y-5"
+                      exit={{ opacity: 0, x: -20 }}
+                    >
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-2 text-silver">Name</label>
+                          <Input
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            placeholder="Your name"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2 text-silver">Email</label>
+                          <Input
+                            type="email"
+                            required
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            placeholder="you@company.com"
+                          />
+                        </div>
+                      </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">Tell us more</label>
-                  <textarea
-                    rows={4}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full bg-gunmetal border border-titanium/50 rounded-lg px-4 py-3 text-white placeholder-silver focus:border-ember focus:outline-none transition-colors resize-none"
-                    placeholder="What are you building? What's the challenge?"
-                  />
-                </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-silver">Company</label>
+                        <Input
+                          type="text"
+                          value={formData.company}
+                          onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                          placeholder="Your company (optional)"
+                        />
+                      </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-ember hover:bg-ember/90 text-white py-4 rounded-lg font-semibold transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
-                >
-                  Send Message
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </form>
-            )}
-          </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-silver">What do you need?</label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {services.map((service) => (
+                            <motion.button
+                              key={service}
+                              type="button"
+                              onClick={() => setFormData({ ...formData, service })}
+                              className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                formData.service === service
+                                  ? 'bg-ember text-white shadow-lg shadow-ember/20'
+                                  : 'bg-gunmetal border border-titanium/30 text-silver hover:border-ember/30 hover:text-white'
+                              }`}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              {service}
+                            </motion.button>
+                          ))}
+                        </div>
+                      </div>
 
-          <div className="space-y-8">
-            <div className="bg-charcoal border border-titanium/30 rounded-2xl p-8">
-              <h3 className="text-xl font-bold mb-4">Direct Contact</h3>
-              <div className="space-y-4">
-                <a
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-silver">Tell us more</label>
+                        <Textarea
+                          rows={4}
+                          value={formData.message}
+                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                          placeholder="What are you building? What's the challenge?"
+                        />
+                      </div>
+
+                      <Button
+                        type="submit"
+                        size="lg"
+                        className="w-full group shadow-lg shadow-ember/20 hover:shadow-ember/40 hover:scale-[1.02] transition-all duration-300"
+                      >
+                        Send Message
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            className="space-y-6"
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
+            <Card className="hover:border-ember/20 transition-all duration-300">
+              <CardHeader>
+                <CardTitle>Direct Contact</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <motion.a
                   href="mailto:hello@venturestack.io"
                   className="flex items-center gap-3 text-silver hover:text-white transition-colors"
+                  whileHover={{ x: 4 }}
                 >
-                  <Mail className="w-5 h-5 text-ember" />
+                  <div className="w-9 h-9 rounded-lg bg-ember/10 flex items-center justify-center">
+                    <Mail className="w-4 h-4 text-ember" />
+                  </div>
                   hello@venturestack.io
-                </a>
+                </motion.a>
                 <div className="flex items-center gap-3 text-silver">
-                  <MessageSquare className="w-5 h-5 text-ember" />
+                  <div className="w-9 h-9 rounded-lg bg-ember/10 flex items-center justify-center">
+                    <MessageSquare className="w-4 h-4 text-ember" />
+                  </div>
                   Response within 24 hours
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
-            <div className="bg-gunmetal border border-titanium/30 rounded-2xl p-8">
-              <h3 className="text-xl font-bold mb-4">What Happens Next</h3>
-              <ol className="space-y-4">
-                {[
-                  'We review your inquiry within 24 hours',
-                  'Quick discovery call to understand your needs',
-                  'Custom proposal with clear scope and pricing',
-                  'Start building — no agency delays',
-                ].map((step, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <span className="w-6 h-6 bg-ember/10 rounded-full flex items-center justify-center flex-shrink-0 text-ember text-sm font-bold">
-                      {idx + 1}
-                    </span>
-                    <span className="text-silver">{step}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
+            <Card className="bg-gunmetal hover:border-ember/20 transition-all duration-300">
+              <CardHeader>
+                <CardTitle>What Happens Next</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-4">
+                  {[
+                    'We review your inquiry within 24 hours',
+                    'Quick discovery call to understand your needs',
+                    'Custom proposal with clear scope and pricing',
+                    'Start building — no agency delays',
+                  ].map((step, idx) => (
+                    <motion.li
+                      key={idx}
+                      className="flex items-start gap-3"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={isInView ? { opacity: 1, x: 0 } : {}}
+                      transition={{ delay: 0.5 + idx * 0.1, duration: 0.4 }}
+                    >
+                      <span className="w-7 h-7 bg-ember/10 rounded-lg flex items-center justify-center flex-shrink-0 text-ember text-xs font-bold">
+                        {idx + 1}
+                      </span>
+                      <span className="text-silver text-sm leading-relaxed">{step}</span>
+                    </motion.li>
+                  ))}
+                </ol>
+              </CardContent>
+            </Card>
 
-            <div className="text-center p-6 border border-dashed border-titanium/30 rounded-xl">
+            <motion.div
+              className="text-center p-6 border border-dashed border-titanium/20 rounded-2xl hover:border-ember/20 transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+            >
               <p className="text-silver text-sm italic">
                 "Follow for more. Or don't — your competitors will."
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>

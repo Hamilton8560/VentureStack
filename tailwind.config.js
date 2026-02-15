@@ -16,7 +16,21 @@ export default {
         sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
         mono: ['JetBrains Mono', 'SF Mono', 'Consolas', 'monospace'],
       },
+      keyframes: {
+        'pulse-glow': {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '0.8' },
+        },
+        'slide-up': {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+      },
+      animation: {
+        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+        'slide-up': 'slide-up 0.5s ease-out',
+      },
     },
   },
-  plugins: [],
+  plugins: [require('tailwindcss-animate')],
 };
